@@ -57,8 +57,72 @@ async function saveState(next,section){
  });
 }
 function login(){
- $('#app').innerHTML=`<section class="hero"><div class="eyebrow">Trust your instincts</div><h1>A seat at<br>the Round Table.</h1><p>Your celebrities. Your suspicions. One very competitive league.</p></section><section class="panel login"><h2>Enter the castle</h2><p class="muted">Enter your email to sign in or join the league. We’ll send you a private sign-in link. New players introduce themselves after verifying their email. You can name your team later in My picks; it’s optional.</p><form id="login"><label>Email address<input type="email" id="email" required autocomplete="email" placeholder="you@example.com"></label><button class="primary">Send sign-in link</button></form></section>`;
- bind('#login','submit',async e=>{e.preventDefault();const button=e.target.querySelector('button');button.disabled=true;try{const {error}=await api.auth.signInWithOtp({email:$('#email').value.trim(),options:{emailRedirectTo:location.origin+location.pathname}});if(error)throw error;notice('Check your email for your sign-in link.');}finally{button.disabled=false;}});
+ $('#app').innerHTML=`<section class="hero"><div class="eyebrow">Trust your instincts</div><h1>A seat at<br>the Round Table.</h1><p>Your celebrities. Your suspicions. One very competitive league.</p></section><section class="panel login"><h2>Enter the castle</h2><p class="muted">Enter your email to sign in or join the league. We’ll send you a six-digit sign-in code. New players introduce themselves after verifying their email. You can name your team later in My picks; it’s optional.</p><form id="login"><label>Email address<input type="email" id="email" required autocomplete="email" placeholder="you@example.com"></label><button class="primary">Send sign-in code</button></form></section>`;
+
+ bind('#login','submit',async e=>{
+  e.preventDefault();
+
+  const email=$('#email').value.trim().toLowerCase();
+  const button=e.target.querySelector('button');
+  button.disabled=true;
+
+  try{
+   const {error}=await api.auth.signInWithOtp({email});
+   if(error)throw error;
+   showOtp(email);
+  }finally{
+   button.disabled=false;
+  }
+ });
+}
+function showOtp(email){
+ $('#app').innerHTML=`<section class="hero"><div class="eyebrow">A message from the castle</div><h1>Check your<br>email.</h1><p>Your invitation has been sent.</p></section><section class="panel login"><h2>Enter your sign-in code</h2><p class="muted">We’ve sent a six-digit code to <strong class="account-email">${esc(email)}</strong>.</p><form id="otp"><label>Sign-in code<input type="text" id="otp-code" required inputmode="numeric" autocomplete="one-time-code" maxlength="6" pattern="[0-9]{6}" placeholder="123456"></label><button class="primary">Enter the castle</button></form><button id="resend-code" class="space">Send another code</button><button id="different-email" class="space">Use another email</button></section>`;
+
+ $('#otp-code').focus();
+
+ bind('#otp','submit',async e=>{
+  e.preventDefault();
+
+  const token=$('#otp-code').value.trim();
+  const button=e.target.querySelector('button');
+  button.disabled=true;
+
+  try{
+   const {data:authData,error}=await api.auth.verifyOtp({
+    email,
+    token,
+    type:'email'
+   });
+
+   if(error)throw error;
+
+   signedInEmail=authData.user?.email||email;
+   await refresh();
+
+  }catch(error){
+   notice(error.message||'That code could not be verified. Check the code and try again.');
+   button.disabled=false;
+  }
+ });
+
+ bind('#resend-code','click',async e=>{
+  const button=e.currentTarget;
+  button.disabled=true;
+
+  try{
+   const {error}=await api.auth.signInWithOtp({email});
+   if(error)throw error;
+   notice('A new sign-in code has been sent.');
+  }catch(error){
+   notice(error.message||'Could not send another code. Please try again.');
+  }finally{
+   setTimeout(()=>{button.disabled=false;},30000);
+  }
+ });
+
+ bind('#different-email','click',()=>{
+  login();
+ });
 }
 async function useAnotherEmail(){
  await performSave(async()=>{
