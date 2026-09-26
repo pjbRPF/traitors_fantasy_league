@@ -76,7 +76,6 @@ function login(){
  });
 }
 function showOtp(email){
- function showOtp(email){
  $('#app').innerHTML=`<section class="hero"><div class="eyebrow">A message from the castle</div><h1>Check your<br>email.</h1><p>Your invitation has been sent.</p></section><section class="panel login"><h2>Enter your sign-in code</h2><p class="muted">We’ve sent an eight-digit code to <strong class="account-email">${esc(email)}</strong>.</p><form id="otp"><label>Sign-in code<input type="text" id="otp-code" required inputmode="numeric" autocomplete="one-time-code" maxlength="8" pattern="[0-9]{8}" placeholder="12345678"></label><button class="primary">Enter the castle</button></form><button id="resend-code" class="space">Send another code</button><button id="different-email" class="space">Use another email</button></section>`;
 
  $('#otp-code').focus();
