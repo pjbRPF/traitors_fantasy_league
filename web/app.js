@@ -88,7 +88,7 @@ function showOtp(email){
   button.disabled=true;
 
   try{
-   const {data:authData,error}=await api.auth.verifyOtp({
+   const {error}=await api.auth.verifyOtp({
     email,
     token,
     type:'email'
@@ -96,8 +96,7 @@ function showOtp(email){
 
    if(error)throw error;
 
-   signedInEmail=authData.user?.email||email;
-   await refresh();
+   location.reload();
 
   }catch(error){
    notice(error.message||'That code could not be verified. Check the code and try again.');
