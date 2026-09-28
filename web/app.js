@@ -57,7 +57,7 @@ async function saveState(next,section){
  });
 }
 function login(){
- $('#app').innerHTML=`<section class="hero"><div class="eyebrow">Trust your instincts</div><h1>A seat at<br>the Round Table.</h1><p>Your celebrities. Your suspicions. One very competitive league.</p></section><section class="panel login"><h2>Enter the castle</h2><p class="muted">Enter your email to sign in or join the league. We’ll send you a eight-digit sign-in code. New players introduce themselves after verifying their email. You can name your team later in My picks; it’s optional.</p><form id="login"><label>Email address<input type="email" id="email" required autocomplete="email" placeholder="you@example.com"></label><button class="primary">Send sign-in code</button></form></section>`;
+ $('#app').innerHTML=`<section class="hero"><div class="eyebrow">Trust your instincts</div><h1>A seat at<br>the Round Table.</h1><p>Your celebrities. Your suspicions. One very competitive league.</p></section><section class="panel login"><h2>Enter the castle</h2><p class="muted">Enter your email to sign in or join the league. We’ll send you an eight-digit sign-in code. New players introduce themselves after verifying their email. You can name your team later in My picks; it’s optional.</p><form id="login"><label>Email address<input type="email" id="email" required autocomplete="email" placeholder="you@example.com"></label><button class="primary">Send sign-in code</button></form></section>`;
 
  bind('#login','submit',async e=>{
   e.preventDefault();

@@ -12,7 +12,7 @@ python3 scripts/serve.py --port 8765
 
 Open [the local preview](http://127.0.0.1:8765/). The server serves `web/` and refreshes the cached news in the background when it is due. It can update the working copy of `web/news.json`.
 
-With populated `web/config.js`, the preview connects to the configured Supabase project and therefore its real league data. To test real email sign-in locally, add the exact local URL to Supabase's allowed redirects as well as retaining the production URL.
+With populated `web/config.js`, the preview connects to the configured Supabase project and therefore its real league data. Real email sign-in sends an eight-digit OTP that is entered in the same browser page; it does not use `emailRedirectTo`. Keep the production Site URL configured and add the exact local URL to Supabase's allowed redirects if you also test other account flows locally.
 
 For a disposable demo, use a separate local copy of the project and set its `web/config.js` to:
 
@@ -53,7 +53,7 @@ The browser suite changes its demo data, submits picks, adds a player and tests 
 
 The test scripts also accept `PGLITE_MODULE` and `PLAYWRIGHT_MODULE` overrides for dependency import locations, and `CHROME_PATH` for an installed Chromium/Chrome executable.
 
-Hosted sign-in and email delivery require separate checks in the deployed site. Passing local checks does not verify SMTP credentials or Supabase redirect settings.
+Hosted sign-in and email delivery require separate checks in the deployed site. Passing local checks does not verify SMTP credentials, the hosted Magic Link and Confirm signup templates, or the project's eight-digit OTP setting.
 
 ## Data and changes
 
