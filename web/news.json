@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-02T12:35:12.023476+00:00",
+  "checkedAt": "2026-10-02T12:37:13.282865+00:00",
   "feed": "Google News RSS",
   "stories": [
     {
@@ -13,12 +13,6 @@
       "url": "https://news.google.com/rss/articles/CBMimgFBVV95cUxOWEZnYUU0bFFYRnZLWFZDSjNWNDBVMG5DSGxrc2ttMEFzQzdpUFR2YXBlU2h2UGlrMk9XRE9UMjhiczlTRGJQT0c4M1ZqZjY3NzA5RXJhNU96N2dqcERsa3NQUGExNnFPRTJ5dkJNcVkxQ2k3TE9kOTVBMUotMWhFUUFQaEhCVU9EYy1IeVpKOXN4RzNoU3pmQU93?oc=5",
       "source": "Radio Times",
       "publishedAt": "2026-10-02T09:57:26+00:00"
-    },
-    {
-      "title": "The Celebrity Traitors series 2 contestants reveal whether they'd rather be a Traitor or Faithful as Claudia Winkleman talks fashion, long fringes and why she had to \"hide in a bush until I composed myself\"",
-      "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxQUWVqYzQxUlcyYXNKaHM5SkN2SXZUZmR4OER6RWEzMThVdXAzYUljMFBYeTZGckw2SV9lZzJhRVhvVjFRbzNJQVVYZHp1bDhHenZWS1FSay0tTkdkemV5Ul9WcXdmRzNRSzgzS2J1emI0OW5acm5kSFpzSjhLVEp3R0lERDJ0azVPRU8wdjQ2UDJjMi1UdXpoT0E1OGxwZ0xLSUtDWWNxbnN2UQ?oc=5",
-      "source": "BBC",
-      "publishedAt": "2026-10-02T09:54:16+00:00"
     },
     {
       "title": "Celebrity Traitors 2026: Watch the moment Richard E. Grant admission causes chaos in the castle",
@@ -37,6 +31,12 @@
       "url": "https://news.google.com/rss/articles/CBMihgFBVV95cUxNSnFHYlJFZldCQXpaaHF6anlaMUVaMWNqRmI0OTdaXzhpeVRtcHJTeElPMXNUS0pfNDN6OUlSSGoyMS05elo1VEd3WTdWWkNMamZvRndRV19yOHRoRmVLbjFaRkJDMW1kZUVnRFozQVVkWW1ZeFNydEU3dVF1aXhQbXpVVWlrQQ?oc=5",
       "source": "The Telegraph",
       "publishedAt": "2026-10-02T08:09:00+00:00"
+    },
+    {
+      "title": "Celebrity Traitors 2026: Who are the Traitors and who are the Faithfuls?",
+      "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxQTExaZURwTi1EOV9IeEVWbWdaeWZ6djVsd2hfU2pLREgtVXI0Tmt3SW1RZkh5dUhhckdCeWszczR0WlBqQm1uR3VOdGRvYl9WRkltbGZ4S1hrX0FEUEw5T253eXlucFlfTzVaSnExaXRmT05kVVVIMVNkdlowZ1VVMDhhekVpbjg0TEhkM2ZobDNzLUphT2tpZnBuU2FWbHdOc25tSlRldGJUQWFS?oc=5",
+      "source": "London Evening Standard",
+      "publishedAt": "2026-10-02T06:16:31+00:00"
     }
   ]
 }
