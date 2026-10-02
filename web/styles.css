@@ -68,3 +68,4 @@ input,select{font:inherit;max-width:100%;border:1px solid #56604d;background:#0b
 #otp-code{font-family:monospace;letter-spacing:.2em;font-size:1.4rem}
 
 .team-link{background:none;border:0;padding:0;text-align:left;color:var(--gold);font-weight:bold;text-decoration:underline;text-underline-offset:4px;overflow-wrap:anywhere}.team-link:hover{text-decoration-thickness:2px}#team-inspector{scroll-margin-top:20px}#team-inspector-title:focus{outline:none}
+.event-group{border-top:1px solid var(--line);margin:20px 0}.event-group>summary{display:flex;justify-content:space-between;align-items:center;font-family:'Cinzel',Georgia,serif;font-size:18px}.event-group>summary span{font:500 10px 'DM Sans',sans-serif;color:var(--muted);letter-spacing:.5px}

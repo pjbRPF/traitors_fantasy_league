@@ -2,9 +2,21 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {activeScoringRules,removeRetiredScoring} from '../web/scoring-rules.mjs';
+import {groupProgrammeEvents} from '../web/programme-events.mjs';
 import {episodeScoringRules,characterPoints,score} from '../web/engine.mjs';
 const seed=JSON.parse(readFileSync(new URL('../web/seed.json',import.meta.url)));
 const retired={id:'SHIELD_USED',role:'Any',category:'Universal',label:'Legacy event',points:4};
+
+test('programme event groups contain every scoring rule once and retain unknown rules',()=>{
+ const groups=groupProgrammeEvents(seed.rules);
+ const ids=groups.flatMap(group=>group.rules.map(rule=>rule.id));
+ assert.equal(ids.length,seed.rules.length);
+ assert.deepEqual([...ids].sort(),seed.rules.map(rule=>rule.id).sort());
+ assert.deepEqual(groups.map(group=>group.title),[
+  'Throughout the episode','Mission & shields','Murder & recruitment','Round Table & banishment','Episode outcomes'
+ ]);
+ assert.equal(groupProgrammeEvents([{id:'CUSTOM_EVENT'}]).at(0).title,'Other events');
+});
 
 test('legacy shield activation never scores or appears among active rules, including before migration',()=>{
  const s=structuredClone(seed);s.rules.splice(3,0,retired);
