@@ -71,7 +71,7 @@ Keep this project open in a browser tab for the next steps.
 2. Copy all of [seed.sql](seed.sql) into it.
 3. Click **Run**.
 
-This loads **21 celebrities, 47 scoring rules and 10 episodes**. It does not create player accounts or import anyone's old picks. Celebrity roles start as **Unknown**; organisers enter them after the show's reveal.
+This loads **21 celebrities, 46 scoring rules and 10 episodes**. It does not create player accounts or import anyone's old picks. Celebrity roles start as **Unknown**; organisers enter them after the show's reveal.
 
 To check the import, run this in a new query:
 
@@ -84,7 +84,7 @@ from public.league_config
 where id = 1;
 ```
 
-**Expected result:** one row containing `21`, `47` and `10`.
+**Expected result:** one row containing `21`, `46` and `10`.
 
 ### Add yourself as the first organiser
 
@@ -160,7 +160,7 @@ Cloudflare will deploy future commits to `main` automatically. [Cloudflare repos
 4. Under **Redirect URLs**, add the same complete URL and save.
 5. In Authentication's sign-in/provider settings, ensure **Email** and **Allow new users to sign up** are enabled. Keep email confirmation enabled.
 
-The two URLs should match the site you actually open. The OTP sign-in request does not supply `emailRedirectTo`: players enter the emailed code on the page they already have open. Keeping the canonical site and allowed redirect configured also supports Supabase's other account flows if you enable them later. [Supabase redirect guide](https://supabase.com/docs/guides/auth/redirect-urls)
+The two URLs should match the site you actually open. Players enter the emailed code on the page they already have open. The app retains `emailRedirectTo` so existing link emails still work during the transition; keep the canonical site and allowed redirect configured. [Supabase redirect guide](https://supabase.com/docs/guides/auth/redirect-urls)
 
 New players create their authentication account on their first sign-in. After verifying their email, they enter their name and click **Join the league**. This creates their player entry with ordinary player permissions. Anyone with the site address can join; player email addresses and organiser controls remain restricted to organisers, and open drafts stay private.
 
@@ -205,7 +205,7 @@ Resend Free currently includes **3,000 emails per month**, capped at **100 per d
 
 ## 8. Add the themed email templates
 
-In **Supabase → Authentication → Email Templates**, open the templates and use these subjects and HTML files:
+In **Supabase → Authentication → Emails**, open the templates and use these subjects and HTML files:
 
 | Supabase template | Subject | Copy this HTML file |
 |---|---|---|
@@ -216,9 +216,11 @@ In **Supabase → Authentication → Email Templates**, open the templates and u
 | Reset password | The Round Table: reset your password | [reset-password.html](emails/reset-password.html) |
 | Reauthentication | The Round Table: your verification code | [reauthentication.html](emails/reauthentication.html) |
 
+**For an existing installation, deploy the website with code entry before changing these hosted templates.** Already-open login pages should be refreshed.
+
 For the sign-in flow, replace the subject and full HTML body of both **Magic Link** and **Confirm signup** with [sign-in.html](emails/sign-in.html), then **Save**. That shared template displays `{{ .Token }}` and deliberately contains no `{{ .ConfirmationURL }}` or clickable authentication button. Returning and first-time players therefore receive the same themed OTP email without duplicating the HTML in this repository.
 
-In the project's email authentication settings, set the OTP length to **8 digits**. It must agree with the frontend's `maxlength="8"` and `pattern="[0-9]{8}"` validation; do not leave the project configured for six digits. Changes apply only to newly sent emails. A GitHub commit does not update these Supabase settings. [Supabase template guide](https://supabase.com/docs/guides/auth/auth-email-templates)
+In the project's email authentication settings, set the OTP length to **8 digits**. The app accepts 6–10 digits for compatibility, while Supabase enforces the configured length. Keep the email resend interval at 60 seconds to match the website countdown. Changes apply only to newly sent emails. A GitHub commit does not update these Supabase settings. [Supabase template guide](https://supabase.com/docs/guides/auth/auth-email-templates)
 
 The app uses numeric OTPs because corporate and university email security products can inspect or pre-fetch one-time links, consuming a magic link before the player uses it. The extra templates are ready for future account features; the app has no password-reset, email-change or reauthentication screens. See [email template notes](emails/README.md) before enabling those flows.
 
@@ -262,25 +264,65 @@ The news feed updates headlines only. **Organisers enter starting roles, recruit
 1. Agree scoring values under **Organiser → Scoring values**.
 2. Add players and collect their three preseason Traitor predictions. Players choose **Make preseason picks** on Standings, or open **My picks**, which defaults to preseason while predictions are open. They select exactly three celebrities and click **Save picks**; no roles, roster setup or captain are required.
 3. Collect a **separate episode 1 team** using **Pick episode 1 team** on Standings (or **My picks → Episode team → Episode 1**). The default is **any eight eligible celebrities plus a captain**, with no role quotas. Organisers can change **Episode 1 team size** before teams are submitted.
-4. Before the first broadcast, lock **both** preseason predictions in Season controls and episode 1 drafts in Episode setup & scoring. These are independent locks. The preseason lock also freezes scoring values for the season.
-5. After the reveal, record the original roles under **Season controls → Record starting roles after episode 1** and save. Do not change episode 1’s frozen roster.
+4. Preseason predictions and episode 1 teams close automatically at the first BBC broadcast deadline. The organiser can close either earlier. The preseason lock also freezes scoring values for the season.
+5. After the reveal, record the original roles under **Season controls → Record the original roles after the full reveal** and save. Do not change episode 1’s frozen roster.
 
-Episode 1 scores only rules labelled **Any role**: shields, missions, confessionals, role-neutral voting events and other universal bonuses/penalties. Captaincy doubles these points, including penalties. Traitor- and Faithful-specific counts do not contribute to episode 1, even if older data contains them. These team points appear in the leaderboard’s Weekly column; the three original-Traitor predictions keep their separate Preseason score.
+Episodes 1 and 2 score only rules labelled **Any role**: shields, missions, confessionals, role-neutral voting events and other universal bonuses/penalties. Captaincy doubles these points, including penalties. Traitor- and Faithful-specific counts do not contribute to either opening round, even if older data contains them. These team points appear in the leaderboard’s Weekly column; the three original-Traitor predictions keep their separate Preseason score. Their points are awarded once exactly three original Traitors have been recorded; the incomplete episode 1 reveal does not settle those predictions.
 
 ### Each episode
 
-1. For episode 1, check the team size and eligible cast before collecting picks. No role setup is required.
-2. For episode 2, choose **Copy starting roles**, update anyone eliminated during episode 1, and save. For episodes 3–10, copy the previous episode's roster, update roles and eliminations, and save. These describe who is active **before** that episode. A celebrity eliminated during episode 2 should become unavailable in episode 3's roster.
-3. Check the draft slot counts. Defaults are 2 Traitors + 6 Faithful for episodes 2–6, then 1 + 3 for episodes 7–10. Adjust before players submit if the available cast requires it.
-4. Players choose a fresh team and a captain. Celebrities can appear on multiple players' teams. The captain doubles positive and negative points.
-5. Manually lock that episode's drafts before broadcast. Its roster and draft requirements then become fixed.
-6. Record each celebrity's event counts and save. Counts remain editable for corrections. Players can use **Refresh scores** to retrieve the latest totals.
+1. For episodes 1 and 2, check the eligible cast before collecting picks. Players choose any eight eligible celebrities and a captain. Unknown roles are allowed; only Any-role events score.
+2. Before episode 3, choose **Copy starting roles**, update anyone eliminated and save. For episodes 4–10, copy the previous episode's roster, update recruitment and eliminations, and save **before the deadline**. Rosters describe who is active before the episode. Leave unresolved roles as Unknown until the reveal.
+3. Check the draft quotas. Defaults are 2 Traitors + 6 Faithful for episodes 3–6, then 1 + 3 for episodes 7–10. Adjust before teams are submitted if the remaining cast requires it.
+4. Players can change their team and captain before each broadcast. Celebrities can appear on multiple teams. Captaincy doubles positive and negative points. If a player does nothing, their previous team carries over automatically.
+5. Drafts close automatically at **20:00 UK time** on the published broadcast date. You can lock a round earlier. Its roster and requirements then become fixed; event counts remain editable.
+6. Record each celebrity's event counts and save. Check **Entries to review** for late legacy submissions or carried teams with unfilled places. Players can use **Refresh scores** to retrieve the latest totals.
 
-Before the finale, collect and lock final-side predictions. After the result, record **Faithful** or **Traitors** as the winner. A correct final prediction earns 25 points.
+Before the finale, collect final-side predictions: these close automatically at the episode 10 deadline. After the result, record **Faithful** or **Traitors** as the winner. A correct final prediction earns 25 points.
 
-There are no automatic broadcast deadlines, fallback teams or catch-up points. Missing submissions score zero. Take a **Download league backup** after major updates and keep the JSON file private; restoring a backup currently requires a database operation.
+### Automatic team carry-over
+
+Only weekly teams carry forward. A player's own saved team for a round always takes priority. Otherwise, at the deadline the database creates a team from their previous round, including through several missed rounds. Players do not need to visit the site or sign in for this to happen. My picks shows a preview before the deadline.
+
+- Retain active celebrities, within the new round's team size or role quotas.
+- Keep earlier selections first, dropping later selections when a quota shrinks. Existing submissions store picks in the order they were selected, and new submissions also record explicit selection order. If that order is explicitly unknown or unusable, retain names in alphabetical order from A onwards, dropping names at the end. **Carry-over priority** on My picks shows the order; remove and reselect someone to move them to the end, then save.
+- Keep the captain if retained; otherwise the first retained pick becomes captain.
+- Do not invent replacements. Eliminations or role quotas may leave vacant places, which earn no points. Players can fill these and save a complete team before the deadline. Retained picks still score if the player takes no action.
+- A player with no previous weekly team receives no automatic first team. Preseason and final predictions never carry over.
+
+Existing entries are never rewritten or removed. Review flags do not disqualify entries or alter scores. A legacy entry's last-save time does not reveal what any previous version contained. Take a **Download league backup** after major updates and keep the JSON file private; restoring a backup requires a database operation.
+
+### BBC One broadcast schedule
+
+All deadlines are **20:00 Europe/London**, including the change from BST to GMT. The premiere on 1 October was one extended main episode; *Uncloaked* and *Traitor or Faithful? Claudia Decides* are extras and do not create fantasy rounds. [BBC announcement](https://www.bbc.co.uk/mediacentre/2026/the-celebrity-traitors-series-2-air-date-trailer), [BBC episode 1](https://www.bbc.co.uk/programmes/m0030pxt), [full schedule](https://www.radiotimes.com/tv/entertainment/reality-tv/celebrity-traitors-season-2-release-schedule/).
+
+| Episode | Date (2026) | UK deadline |
+|---|---|---|
+| 1 | Thursday 1 October | 20:00 BST |
+| 2 | Friday 2 October | 20:00 BST |
+| 3 | Thursday 8 October | 20:00 BST |
+| 4 | Friday 9 October | 20:00 BST |
+| 5 | Thursday 15 October | 20:00 BST |
+| 6 | Friday 16 October | 20:00 BST |
+| 7 | Thursday 22 October | 20:00 BST |
+| 8 | Friday 23 October | 20:00 BST |
+| 9 | Thursday 29 October | 20:00 GMT |
+| 10 | Friday 30 October | 20:00 GMT |
+
+The database enforces deadlines using its own clock, even for stale browser pages. Locks and carried teams are materialised on the next league read or organiser save; no paid scheduler is needed. The roster must be prepared before the deadline even when nobody opens the site at broadcast time. If the BBC reschedules a broadcast, update the future deadline through a reviewed database change; closed rounds cannot be reopened from the app.
 
 ## Updating an existing installation
+
+### Broadcast deadlines, episode 2 and carry-over (2 October 2026)
+
+1. Deploy the latest website from `main` through Cloudflare.
+2. In **Supabase → SQL Editor → New query**, run the whole [broadcast schedule upgrade](migrations/20261002_broadcast_schedule.sql), **after all older migrations**. It requires the existing ten-episode league.
+3. Refresh the site. Check the next broadcast banner, episode 2's any-eight format and **Organiser → Entries to review**.
+
+Existing sessions remain valid: nobody needs to sign out, register again or request another email. Players only need to refresh to see the new controls. Players who leave their teams untouched get automatic carry-over.
+
+The transactional upgrade is safe to rerun. It preserves existing players, entries, event counts and manual locks, and flags late/incompatible historical entries without deleting them. New installations already include the functions and schedule in `schema.sql` and `seed.sql`. Do not reapply an older migration afterwards, because historical files replace some of the same functions.
+
 
 Website changes committed to `main` deploy through Cloudflare. Database changes and email-template changes are separate:
 
@@ -290,6 +332,20 @@ Website changes committed to `main` deploy through Cloudflare. Database changes 
 | A database migration | Run the specified file in Supabase's SQL Editor. |
 | Email subject or HTML | Copy it into the matching Supabase email template and save. |
 | Scores, draft eligibility and player roles | Save through the Organiser controls. |
+
+### Scoring cleanup (25 September 2026)
+
+The league now has 46 scoring rules. Receiving a shield earns **+8** and blocking an attempted murder earns **+10**. These can total **18 points**, or **36 for the captain**. There is no separate activation bonus.
+
+The updated website applies this scoring to existing leagues immediately, including previously recorded events. To clean the stored Supabase rules and counts too:
+
+1. Copy the whole [scoring cleanup migration](migrations/20260925_retire_shield_activation.sql).
+2. Open your existing project in **Supabase → SQL Editor → New query**, paste it and click **Run**.
+3. Refresh any open league tabs before saving further changes.
+
+This removes only the retired rule and its counts. All other point values, events, players, picks, rosters and locks are preserved. It works after preseason locks, prevents old clients from restoring the retired event, and is safe to rerun. Any points previously awarded for that event no longer contribute to totals. Fresh installs already include the change; do not rerun the seed on an existing league.
+
+### Organiser accounts on older installations
 
 For organiser management on an older installation, run [migrations/20260907_organisers.sql](migrations/20260907_organisers.sql) in Supabase, then refresh the website. This migration can be rerun and preserves players, picks, scores and existing organiser roles. Fresh installs using the current `schema.sql` already include it.
 
@@ -360,7 +416,7 @@ Plan details checked **7 September 2026**. This setup is designed for a small le
 | **Email address not authorized** | Custom SMTP has not been successfully configured. Complete step 7; the default sender is restricted to the Supabase project team. |
 | **Error sending confirmation email** | Check the SMTP host, port, username and app password. Use an app password rather than your normal Google password. Check Supabase's authentication logs for details. |
 | Email sends are rate-limited | Wait before retrying and check Authentication's Rate Limits and your sender's limits. Repeated requests can make the delay worse. |
-| The sign-in email contains a link or button instead of a code | Apply `emails/sign-in.html` to both Magic Link and Confirm signup under **Authentication → Email Templates**. Both must use `{{ .Token }}`, not `{{ .ConfirmationURL }}`. |
+| The sign-in email contains a link or button instead of a code | Apply `emails/sign-in.html` to both Magic Link and Confirm signup under **Authentication → Emails**. Both must use `{{ .Token }}`, not `{{ .ConfirmationURL }}`. |
 | The code is rejected or has expired | Confirm the Supabase OTP length is 8, request a fresh sign-in code and enter the newest code. Each code is single-use. |
 | **Your email is not on this league**, or **joining is not enabled yet** | Apply the self-registration migration above and refresh the latest website. Verified new players can then choose a name and join. For the first organiser, also check the organiser insert in step 3. |
 | No **Organiser** tab | Check the signed-in email is the organiser's email. If just promoted, refresh. |
