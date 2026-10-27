@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-27T18:00:12.823465+00:00",
+  "checkedAt": "2026-10-27T22:13:53.334592+00:00",
   "feed": "Google News RSS",
   "stories": [
     {
@@ -27,16 +27,16 @@
       "publishedAt": "2026-10-26T14:27:00+00:00"
     },
     {
-      "title": "The Celebrity Traitors Series 2 - Everything you need to know",
-      "url": "https://news.google.com/rss/articles/CBMihgFBVV95cUxNdVRHelR3eVV6RGZNb243RUJ0MlZudHd4eWdYdTRiQlZqUm1rX2dCckY1VVlhcmNFX1BlSWkwNGR5TE9EM2Joa2pFakJ3YTNXUWRiemhoQy1mUHItcFZOWDhIRXlFQ3lzUG5JcjlBdGhvenRqOFJnNWNmekVEdUJ1Y1lmYnd5UQ?oc=5",
-      "source": "BBC",
-      "publishedAt": "2026-10-26T12:01:04+00:00"
-    },
-    {
       "title": "Celebrity Traitors full line-up: Which players have left the game?",
       "url": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxNVlBMVlZJbXZkVUFsdDlyX2R5Y0pWV1BDTFEzWDZ2TFdaZ3N0anJzd0R6eUxpYVduZW5weFRJQjlzU0pBRjhSR1ptVmtYM3owLVg3eWpZTHFKcnV2Q0FOMlU2RlZ6dEJRYWFEcnU4VXZBbmJ1aUlONWFrNkFvQjJoOWVEeFVvWjBC?oc=5",
       "source": "The Telegraph",
       "publishedAt": "2026-10-24T09:52:00+00:00"
+    },
+    {
+      "title": "Celebrity Traitors left on knife edge after trip to field of screams",
+      "url": "https://news.google.com/rss/articles/CBMiXkFVX3lxTFBPbzNfTUpfaEVhWUxQT19adDBYeVZtZ3FTejN2MlFxcjFfdDlBVXBNdlZ2b3BoZlprdUhQczJoY0FYZ3gyVWV2VkNaZTVnM1ZVUGhPMm41NXJyY2lWc2c?oc=5",
+      "source": "BBC",
+      "publishedAt": "2026-10-23T22:52:40+00:00"
     }
   ]
 }
